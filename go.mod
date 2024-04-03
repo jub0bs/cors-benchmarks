@@ -3,7 +3,7 @@ module github.com/jub0bs/cors-benchmarks
 go 1.22
 
 require (
-	github.com/jub0bs/cors v0.1.0
+	github.com/jub0bs/cors v0.1.1
 	github.com/rs/cors v1.10.1
 )
 
