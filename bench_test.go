@@ -173,8 +173,7 @@ func BenchmarkMiddleware(b *testing.B) {
 
 		var handler http.Handler = bc.handler
 		if bc.allowedOrigins == nil { // no CORS
-			desc := pad(b, "no CORS", bc.desc)
-			b.Run(desc, subBenchmark(handler, req))
+			b.Run("mw=none", subBenchmark(handler, req))
 			continue
 		}
 
@@ -184,7 +183,7 @@ func BenchmarkMiddleware(b *testing.B) {
 			AllowCredentials: bc.credentialed,
 			AllowedHeaders:   bc.allowedReqHeaders,
 		})
-		desc := pad(b, "rs_cors", bc.desc)
+		desc := "mw=rs-cors/req=" + bc.desc
 		b.Run(desc, subBenchmark(rsMw.Handler(handler), req))
 
 		// jub0bs/cors
@@ -196,7 +195,7 @@ func BenchmarkMiddleware(b *testing.B) {
 		if err != nil {
 			b.Fatal(err)
 		}
-		desc = pad(b, "jub0bs_cors", bc.desc)
+		desc = "mw=jub0bs-cors/req=" + bc.desc
 		b.Run(desc, subBenchmark(jub0bsMw.Wrap(handler), req))
 	}
 }
@@ -212,16 +211,6 @@ func newRequest(method string, hdrs http.Header) *http.Request {
 		req.Header[name] = value
 	}
 	return req
-}
-
-func pad(b *testing.B, pre string, suf string) string {
-	b.Helper()
-	const n = 40 // note: adjust this as needed
-	padLen := n - len(pre) - len(suf)
-	if padLen < 0 {
-		b.Fatalf("negative padLen: %d", padLen)
-	}
-	return pre + strings.Repeat("_", padLen) + suf
 }
 
 func subBenchmark(handler http.Handler, req *http.Request) func(*testing.B) {
