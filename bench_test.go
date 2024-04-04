@@ -3,7 +3,6 @@ package bench
 import (
 	"fmt"
 	"io"
-	"math"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -164,7 +163,7 @@ func BenchmarkMiddleware(b *testing.B) {
 			reqHeaders: http.Header{
 				headerOrigin: []string{"https://example.com"},
 				headerACRM:   []string{http.MethodGet},
-				headerACRH:   adversarialACRH,
+				headerACRH:   []string{strings.Repeat(",", 1024)},
 			},
 		},
 	}
@@ -284,16 +283,4 @@ var reqHeadersInDefaultRsCORS = []string{
 	"Accept",
 	"Content-Type",
 	"X-Requested-With",
-}
-
-var adversarialACRH []string
-
-func init() { // populates adversarialACRH
-	n := int(math.Floor(math.Sqrt(http.DefaultMaxHeaderBytes)))
-	commas := strings.Repeat(",", n)
-	res := make([]string, n)
-	for i := range res {
-		res[i] = commas
-	}
-	adversarialACRH = res
 }

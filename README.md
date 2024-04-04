@@ -70,6 +70,6 @@ jub0bs_cors_____________any_vs_preflight-8       446 ns/op        944 B/op     7
 rs_cors________________ACRH_vs_preflight-8       522 ns/op        984 B/op    10 allocs/op
 jub0bs_cors____________ACRH_vs_preflight-8       419 ns/op        928 B/op     7 allocs/op 🟢
 
-rs_cors______malicious_ACRH_vs_preflight-8  47203943 ns/op  121177076 B/op  1060 allocs/op 😱
-jub0bs_cors__malicious_ACRH_vs_preflight-8       427 ns/op        928 B/op     7 allocs/op 🟢
+rs_cors______malicious_ACRH_vs_preflight-8     16576 ns/op        37832 B/op  11 allocs/op 🤔
+jub0bs_cors__malicious_ACRH_vs_preflight-8       419 ns/op          928 B/op   7 allocs/op 🟢
 ```
