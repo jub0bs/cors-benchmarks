@@ -29,7 +29,11 @@ func BenchmarkMiddleware(b *testing.B) {
 		// CORS config
 		allowedOrigins    []string
 		credentialed      bool
+		allowPNA          bool
+		allowedMethods    []string
 		allowedReqHeaders []string
+		maxAge            int
+		exposedResHeaders []string
 		// request
 		reqMethod  string
 		reqHeaders http.Header
@@ -87,6 +91,19 @@ func BenchmarkMiddleware(b *testing.B) {
 			allowedOrigins:    []string{"*"},
 			allowedReqHeaders: reqHeadersInDefaultRsCORS,
 			reqMethod:         http.MethodGet,
+			reqHeaders: http.Header{
+				headerOrigin: []string{"https://example.com"},
+			},
+		}, {
+			desc:              "all CORS headers vs actual",
+			handler:           dummyHandler,
+			allowedOrigins:    []string{"https://example.com"},
+			credentialed:      true,
+			allowPNA:          true,
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			maxAge:            30,
+			reqMethod:         http.MethodPut,
 			reqHeaders: http.Header{
 				headerOrigin: []string{"https://example.com"},
 			},
@@ -155,6 +172,22 @@ func BenchmarkMiddleware(b *testing.B) {
 				headerACRH:   []string{"content-length"},
 			},
 		}, {
+			desc:              "all CORS headers vs preflight",
+			handler:           dummyHandler,
+			allowedOrigins:    []string{"https://example.com"},
+			credentialed:      true,
+			allowPNA:          true,
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			maxAge:            30,
+			reqMethod:         http.MethodOptions,
+			reqHeaders: http.Header{
+				headerOrigin: []string{"https://example.com"},
+				headerACRPN:  []string{"true"},
+				headerACRM:   []string{http.MethodPut},
+				headerACRH:   []string{"content-length"},
+			},
+		}, {
 			desc:              "malicious ACRH vs preflight",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"*"},
@@ -179,18 +212,28 @@ func BenchmarkMiddleware(b *testing.B) {
 
 		// rs/cors
 		rsMw := rsCors.New(rsCors.Options{
-			AllowedOrigins:   bc.allowedOrigins,
-			AllowCredentials: bc.credentialed,
-			AllowedHeaders:   bc.allowedReqHeaders,
+			AllowedOrigins:      bc.allowedOrigins,
+			AllowCredentials:    bc.credentialed,
+			AllowPrivateNetwork: bc.allowPNA,
+			AllowedMethods:      bc.allowedMethods,
+			AllowedHeaders:      bc.allowedReqHeaders,
+			MaxAge:              bc.maxAge,
+			ExposedHeaders:      bc.exposedResHeaders,
 		})
 		desc := "mw=rs-cors/req=" + bc.desc
 		b.Run(desc, subBenchmark(rsMw.Handler(handler), req))
 
 		// jub0bs/cors
 		jub0bsMw, err := cors.NewMiddleware(cors.Config{
-			Origins:        bc.allowedOrigins,
-			Credentialed:   bc.credentialed,
-			RequestHeaders: bc.allowedReqHeaders,
+			Origins:         bc.allowedOrigins,
+			Credentialed:    bc.credentialed,
+			Methods:         bc.allowedMethods,
+			RequestHeaders:  bc.allowedReqHeaders,
+			MaxAgeInSeconds: bc.maxAge,
+			ResponseHeaders: bc.exposedResHeaders,
+			ExtraConfig: cors.ExtraConfig{
+				PrivateNetworkAccess: bc.allowPNA,
+			},
 		})
 		if err != nil {
 			b.Fatal(err)
