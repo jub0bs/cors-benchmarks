@@ -13,8 +13,8 @@ Run the following commands in your shell (preferably on an idle machine):
 ```shell
 git clone https://github.com/jub0bs/cors-benchmarks
 cd cors-benchmarks
-go test -run ^$ -bench . -count 10 > new.txt
-benchstat -col "/mw@(rs-cors jub0bs-cors)" -row "/req" new.txt
+go test -run ^$ -bench . -count 10 > benchmark_results.txt
+benchstat -col "/mw@(rs-cors jub0bs-cors)" -row "/req" benchmark_results.txt
 ```
 
 ## Results
