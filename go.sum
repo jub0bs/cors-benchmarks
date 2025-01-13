@@ -1,5 +1,5 @@
-github.com/jub0bs/cors v0.5.0 h1:f67rKj2fGx0hYE2eOPgv4AjXrADzc/YACXkfo+GEfcM=
-github.com/jub0bs/cors v0.5.0/go.mod h1:5/xCxMt0w7/dNoOanWdchKR8JH2t6pe4nKfdRY+eZrQ=
+github.com/jub0bs/cors v0.5.1 h1:ZgJzpDs0RMH7TSQXfKyAym8LCT4UEF0swcefPP/uIV8=
+github.com/jub0bs/cors v0.5.1/go.mod h1:5/xCxMt0w7/dNoOanWdchKR8JH2t6pe4nKfdRY+eZrQ=
 github.com/rs/cors v1.11.1 h1:eU3gRzXLRK57F5rKMGMZURNdIG4EoAmX8k94r9wXWHA=
 github.com/rs/cors v1.11.1/go.mod h1:XyqrcTp5zjWr1wsJ8PIRZssZ8b/WMcMf71DJnit4EMU=
 golang.org/x/net v0.33.0 h1:74SYHlV8BIgHIFC/LrYkOGIwL19eTYXQ5wc6TBuO36I=
