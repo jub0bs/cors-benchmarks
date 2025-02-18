@@ -5,7 +5,7 @@ go 1.23
 toolchain go1.23.4
 
 require (
-	github.com/jub0bs/cors v0.5.5
+	github.com/jub0bs/cors v0.5.6
 	github.com/rs/cors v1.11.1
 )
 
