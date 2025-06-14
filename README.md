@@ -4,7 +4,7 @@ This repo contains benchmarks (run with Go v1.24.4) that compare the
 performance of two CORS middleware libraries:
 
 - the more popular [rs/cors](https://github.com/rs/cors) (v1.11.1), and
-- the more user-friendly [jub0bs/cors](https://github.com/jub0bs/cors) (v0.6.0).
+- the more user-friendly [jub0bs/cors](https://github.com/jub0bs/cors) (v0.7.0).
 
 ## Running the benchmarks
 
@@ -26,21 +26,21 @@ pkg: github.com/jub0bs/cors-benchmarks
 cpu: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
                               │   rs-cors   │             jub0bs-cors             │
                               │   sec/op    │   sec/op     vs base                │
-single_vs_actual                625.4n ± 1%   679.8n ± 4%   +8.70% (p=0.000 n=10)
-multiple_vs_actual              658.1n ± 1%   695.0n ± 1%   +5.61% (p=0.000 n=10)
-pathological_vs_actual          715.1n ± 1%   824.4n ± 1%  +15.28% (p=0.000 n=10)
-many_vs_actual                  671.9n ± 1%   661.9n ± 1%   -1.49% (p=0.000 n=10)
-any_vs_actual                   648.4n ± 1%   649.8n ± 2%        ~ (p=0.591 n=10)
-all_CORS_headers_vs_actual      694.5n ± 2%   769.6n ± 2%  +10.81% (p=0.000 n=10)
-single_vs_preflight             529.6n ± 2%   506.0n ± 1%   -4.45% (p=0.000 n=10)
-multiple_vs_preflight           536.1n ± 1%   508.5n ± 2%   -5.15% (p=0.000 n=10)
-pathological_vs_preflight       534.8n ± 1%   596.6n ± 1%  +11.57% (p=0.000 n=10)
-many_vs_preflight               490.9n ± 1%   442.6n ± 1%   -9.83% (p=0.000 n=10)
-any_vs_preflight                523.5n ± 2%   491.9n ± 1%   -6.04% (p=0.000 n=10)
-ACRH_vs_preflight               495.6n ± 2%   462.6n ± 2%   -6.67% (p=0.000 n=10)
-all_CORS_headers_vs_preflight   509.8n ± 2%   490.3n ± 2%   -3.82% (p=0.000 n=10)
-malicious_ACRH_vs_preflight     536.8n ± 1%   478.6n ± 1%  -10.85% (p=0.000 n=10)
-geomean                         578.6n        578.3n        -0.05%
+single_vs_actual                627.8n ± 1%   668.0n ± 2%   +6.40% (p=0.000 n=10)
+multiple_vs_actual              655.2n ± 0%   688.3n ± 1%   +5.04% (p=0.000 n=10)
+pathological_vs_actual          706.8n ± 3%   799.3n ± 1%  +13.09% (p=0.000 n=10)
+many_vs_actual                  672.1n ± 2%   655.5n ± 1%   -2.46% (p=0.000 n=10)
+any_vs_actual                   641.9n ± 1%   649.4n ± 1%        ~ (p=0.075 n=10)
+all_CORS_headers_vs_actual      692.9n ± 2%   754.8n ± 1%   +8.93% (p=0.000 n=10)
+single_vs_preflight             530.3n ± 1%   496.0n ± 1%   -6.48% (p=0.000 n=10)
+multiple_vs_preflight           537.1n ± 2%   500.4n ± 1%   -6.84% (p=0.000 n=10)
+pathological_vs_preflight       534.1n ± 1%   583.3n ± 1%   +9.21% (p=0.000 n=10)
+many_vs_preflight               490.8n ± 1%   441.4n ± 1%  -10.07% (p=0.000 n=10)
+any_vs_preflight                523.4n ± 1%   483.2n ± 3%   -7.66% (p=0.000 n=10)
+ACRH_vs_preflight               497.9n ± 0%   453.3n ± 0%   -8.97% (p=0.000 n=10)
+all_CORS_headers_vs_preflight   508.7n ± 2%   483.7n ± 2%   -4.91% (p=0.000 n=10)
+malicious_ACRH_vs_preflight     537.7n ± 3%   471.4n ± 1%  -12.32% (p=0.000 n=10)
+geomean                         577.8n        569.4n        -1.45%
 
                               │   rs-cors    │              jub0bs-cors              │
                               │     B/op     │     B/op      vs base                 │

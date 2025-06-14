@@ -15,9 +15,8 @@ import (
 const (
 	headerOrigin = "Origin"
 
-	headerACRPN = "Access-Control-Request-Private-Network"
-	headerACRM  = "Access-Control-Request-Method"
-	headerACRH  = "Access-Control-Request-Headers"
+	headerACRM = "Access-Control-Request-Method"
+	headerACRH = "Access-Control-Request-Headers"
 )
 
 const hostMaxLen = 253
@@ -183,7 +182,6 @@ func BenchmarkMiddleware(b *testing.B) {
 			reqMethod:         http.MethodOptions,
 			reqHeaders: http.Header{
 				headerOrigin: []string{"https://example.com"},
-				headerACRPN:  []string{"true"},
 				headerACRM:   []string{http.MethodPut},
 				headerACRH:   []string{"content-length"},
 			},
@@ -212,13 +210,12 @@ func BenchmarkMiddleware(b *testing.B) {
 
 		// rs/cors
 		rsMw := rsCors.New(rsCors.Options{
-			AllowedOrigins:      bc.allowedOrigins,
-			AllowCredentials:    bc.credentialed,
-			AllowPrivateNetwork: bc.allowPNA,
-			AllowedMethods:      bc.allowedMethods,
-			AllowedHeaders:      bc.allowedReqHeaders,
-			MaxAge:              bc.maxAge,
-			ExposedHeaders:      bc.exposedResHeaders,
+			AllowedOrigins:   bc.allowedOrigins,
+			AllowCredentials: bc.credentialed,
+			AllowedMethods:   bc.allowedMethods,
+			AllowedHeaders:   bc.allowedReqHeaders,
+			MaxAge:           bc.maxAge,
+			ExposedHeaders:   bc.exposedResHeaders,
 		})
 		desc := "mw=rs-cors/req=" + bc.desc
 		b.Run(desc, subBenchmark(rsMw.Handler(handler), req))
@@ -231,9 +228,6 @@ func BenchmarkMiddleware(b *testing.B) {
 			RequestHeaders:  bc.allowedReqHeaders,
 			MaxAgeInSeconds: bc.maxAge,
 			ResponseHeaders: bc.exposedResHeaders,
-			ExtraConfig: cors.ExtraConfig{
-				PrivateNetworkAccess: bc.allowPNA,
-			},
 		})
 		if err != nil {
 			b.Fatal(err)
