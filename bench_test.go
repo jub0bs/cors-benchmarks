@@ -244,9 +244,7 @@ var dummyHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 func newRequest(method string, hdrs http.Header) *http.Request {
 	const dummyEndpoint = "https://example.com/whatever"
 	req := httptest.NewRequest(method, dummyEndpoint, nil)
-	for name, value := range hdrs {
-		req.Header[name] = value
-	}
+	req.Header = hdrs
 	return req
 }
 
