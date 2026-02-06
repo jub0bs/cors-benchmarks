@@ -6,6 +6,7 @@ import (
 	"math"
 	"net/http"
 	"net/http/httptest"
+	"slices"
 	"strings"
 	"testing"
 
@@ -23,8 +24,22 @@ const (
 const hostMaxLen = 253
 
 func BenchmarkMiddleware(b *testing.B) {
+	// preliminary sanity checks
+	if len(multipleOrigins) == 0 {
+		b.Fatalf("multipleOrigins is empty")
+	}
+	if slices.Contains(multipleOrigins, disallowedOrigin) {
+		b.Fatalf("multipleOrigins contains %q but should not", disallowedOrigin)
+	}
+	if len(manyOrigins) == 0 {
+		b.Fatalf("manyOrigins is empty")
+	}
+	if slices.Contains(manyOrigins, disallowedOrigin) {
+		b.Fatalf("manyOrigins contains %q but should not", disallowedOrigin)
+	}
+
 	type BenchmarkCase struct {
-		desc    string
+		desc    string // type=a|p/o=y/n/nallowed=one|two|multiple|many
 		handler http.Handler
 		// CORS config
 		allowedOrigins    []string
@@ -47,154 +62,216 @@ func BenchmarkMiddleware(b *testing.B) {
 				headerOrigin: []string{"https://example.com"},
 			},
 		}, {
-			desc:              "single vs actual",
+			desc:              "nb=one/req=a/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"https://example.com"},
+			allowedMethods:    []string{http.MethodPut},
 			allowedReqHeaders: reqHeadersInDefaultRsCORS,
 			reqMethod:         http.MethodGet,
 			reqHeaders: http.Header{
 				headerOrigin: []string{"https://example.com"},
 			},
 		}, {
-			desc:              "multiple vs actual",
+			desc:              "nb=one/req=a/o=n",
+			handler:           dummyHandler,
+			allowedOrigins:    []string{"https://example.com"},
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodGet,
+			reqHeaders: http.Header{
+				headerOrigin: []string{"https://example.org"},
+			},
+		}, {
+			desc:              "nb=multiple/req=a/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    multipleOrigins,
+			allowedMethods:    []string{http.MethodPut},
 			allowedReqHeaders: reqHeadersInDefaultRsCORS,
 			reqMethod:         http.MethodGet,
 			reqHeaders: http.Header{
-				headerOrigin: []string{"https://example.com"},
+				headerOrigin: []string{last(multipleOrigins)},
 			},
 		}, {
-			desc:    "pathological vs actual",
+			desc:              "nb=multiple/req=a/o=n",
+			handler:           dummyHandler,
+			allowedOrigins:    multipleOrigins,
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodGet,
+			reqHeaders: http.Header{
+				headerOrigin: []string{disallowedOrigin},
+			},
+		}, {
+			desc:    "nb=two/req=a/o=y",
 			handler: dummyHandler,
 			allowedOrigins: []string{
 				"https://a" + strings.Repeat(".a", hostMaxLen/2),
 				"https://b" + strings.Repeat(".a", hostMaxLen/2),
 			},
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodGet,
+			reqHeaders: http.Header{
+				headerOrigin: []string{"https://a" + strings.Repeat(".a", hostMaxLen/2)},
+			},
+		}, {
+			desc:    "nb=two/req=a/o=n",
+			handler: dummyHandler,
+			allowedOrigins: []string{
+				"https://a" + strings.Repeat(".a", hostMaxLen/2),
+				"https://b" + strings.Repeat(".a", hostMaxLen/2),
+			},
+			allowedMethods:    []string{http.MethodPut},
 			allowedReqHeaders: reqHeadersInDefaultRsCORS,
 			reqMethod:         http.MethodGet,
 			reqHeaders: http.Header{
 				headerOrigin: []string{"https://c" + strings.Repeat(".a", hostMaxLen/2)},
 			},
 		}, {
-			desc:              "many vs actual",
+			desc:              "nb=many/req=a/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    manyOrigins,
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodGet,
+			reqHeaders: http.Header{
+				headerOrigin: []string{last(manyOrigins)},
+			},
+		}, {
+			desc:              "nb=many/req=a/o=n",
+			handler:           dummyHandler,
+			allowedOrigins:    manyOrigins,
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodGet,
+			reqHeaders: http.Header{
+				headerOrigin: []string{disallowedOrigin},
+			},
+		}, {
+			desc:              "nb=all/req=a/o=y",
+			handler:           dummyHandler,
+			allowedOrigins:    []string{"*"},
+			allowedMethods:    []string{http.MethodPut},
 			allowedReqHeaders: reqHeadersInDefaultRsCORS,
 			reqMethod:         http.MethodGet,
 			reqHeaders: http.Header{
 				headerOrigin: []string{"https://example.com"},
 			},
 		}, {
-			desc:              "any vs actual",
-			handler:           dummyHandler,
-			allowedOrigins:    []string{"*"},
-			allowedReqHeaders: reqHeadersInDefaultRsCORS,
-			reqMethod:         http.MethodGet,
-			reqHeaders: http.Header{
-				headerOrigin: []string{"https://example.com"},
-			},
-		}, {
-			desc:              "all CORS headers vs actual",
+			desc:              "nb=one/req=p/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"https://example.com"},
-			credentialed:      true,
-			allowPNA:          true,
 			allowedMethods:    []string{http.MethodPut},
 			allowedReqHeaders: reqHeadersInDefaultRsCORS,
-			maxAge:            30,
-			reqMethod:         http.MethodPut,
-			reqHeaders: http.Header{
-				headerOrigin: []string{"https://example.com"},
-			},
-		}, {
-			desc:              "single vs preflight",
-			handler:           dummyHandler,
-			allowedOrigins:    []string{"https://example.com"},
-			allowedReqHeaders: reqHeadersInDefaultRsCORS,
-			reqMethod:         http.MethodOptions,
-			reqHeaders: http.Header{
-				headerOrigin: []string{"https://example.com"},
-				headerACRM:   []string{http.MethodGet},
-			},
-		}, {
-			desc:              "multiple vs preflight",
-			handler:           dummyHandler,
-			allowedOrigins:    multipleOrigins,
-			allowedReqHeaders: reqHeadersInDefaultRsCORS,
-			reqMethod:         http.MethodOptions,
-			reqHeaders: http.Header{
-				headerOrigin: []string{"https://example.com"},
-				headerACRM:   []string{http.MethodGet},
-			},
-		}, {
-			desc:    "pathological vs preflight",
-			handler: dummyHandler,
-			allowedOrigins: []string{
-				"https://a" + strings.Repeat(".a", hostMaxLen/2),
-				"https://b" + strings.Repeat(".a", hostMaxLen/2),
-			},
-			allowedReqHeaders: reqHeadersInDefaultRsCORS,
-			reqMethod:         http.MethodOptions,
-			reqHeaders: http.Header{
-				headerOrigin: []string{"https://c" + strings.Repeat(".a", hostMaxLen/2)},
-				headerACRM:   []string{http.MethodGet},
-			},
-		}, {
-			desc:              "many vs preflight",
-			handler:           dummyHandler,
-			allowedOrigins:    manyOrigins,
-			allowedReqHeaders: reqHeadersInDefaultRsCORS,
-			reqMethod:         http.MethodOptions,
-			reqHeaders: http.Header{
-				headerOrigin: []string{"https://example.com"},
-				headerACRM:   []string{http.MethodGet},
-			},
-		}, {
-			desc:              "any vs preflight",
-			handler:           dummyHandler,
-			allowedOrigins:    []string{"*"},
-			allowedReqHeaders: reqHeadersInDefaultRsCORS,
-			reqMethod:         http.MethodOptions,
-			reqHeaders: http.Header{
-				headerOrigin: []string{"https://example.com"},
-				headerACRM:   []string{http.MethodGet},
-			},
-		}, {
-			desc:              "ACRH vs preflight",
-			handler:           dummyHandler,
-			allowedOrigins:    []string{"*"},
-			allowedReqHeaders: reqHeadersInDefaultRsCORS,
-			reqMethod:         http.MethodOptions,
-			reqHeaders: http.Header{
-				headerOrigin: []string{"https://example.com"},
-				headerACRM:   []string{http.MethodGet},
-				headerACRH:   []string{"content-length"},
-			},
-		}, {
-			desc:              "all CORS headers vs preflight",
-			handler:           dummyHandler,
-			allowedOrigins:    []string{"https://example.com"},
-			credentialed:      true,
-			allowPNA:          true,
-			allowedMethods:    []string{http.MethodPut},
-			allowedReqHeaders: reqHeadersInDefaultRsCORS,
-			maxAge:            30,
 			reqMethod:         http.MethodOptions,
 			reqHeaders: http.Header{
 				headerOrigin: []string{"https://example.com"},
 				headerACRM:   []string{http.MethodPut},
-				headerACRH:   []string{"content-length"},
 			},
 		}, {
-			desc:              "malicious ACRH vs preflight",
+			desc:              "nb=one/req=p/o=n",
+			handler:           dummyHandler,
+			allowedOrigins:    []string{"https://example.com"},
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodOptions,
+			reqHeaders: http.Header{
+				headerOrigin: []string{"https://example.org"},
+				headerACRM:   []string{http.MethodPut},
+			},
+		}, {
+			desc:              "nb=multiple/req=p/o=y",
+			handler:           dummyHandler,
+			allowedOrigins:    multipleOrigins,
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodOptions,
+			reqHeaders: http.Header{
+				headerOrigin: []string{last(multipleOrigins)},
+				headerACRM:   []string{http.MethodPut},
+			},
+		}, {
+			desc:              "nb=multiple/req=p/o=n",
+			handler:           dummyHandler,
+			allowedOrigins:    multipleOrigins,
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodOptions,
+			reqHeaders: http.Header{
+				headerOrigin: []string{disallowedOrigin},
+				headerACRM:   []string{http.MethodPut},
+			},
+		}, {
+			desc:    "nb=two/req=p/o=y",
+			handler: dummyHandler,
+			allowedOrigins: []string{
+				"https://a" + strings.Repeat(".a", hostMaxLen/2),
+				"https://b" + strings.Repeat(".a", hostMaxLen/2),
+			},
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodOptions,
+			reqHeaders: http.Header{
+				headerOrigin: []string{"https://a" + strings.Repeat(".a", hostMaxLen/2)},
+				headerACRM:   []string{http.MethodPut},
+			},
+		}, {
+			desc:    "nb=two/req=p/o=n",
+			handler: dummyHandler,
+			allowedOrigins: []string{
+				"https://a" + strings.Repeat(".a", hostMaxLen/2),
+				"https://b" + strings.Repeat(".a", hostMaxLen/2),
+			},
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodOptions,
+			reqHeaders: http.Header{
+				headerOrigin: []string{"https://c" + strings.Repeat(".a", hostMaxLen/2)},
+				headerACRM:   []string{http.MethodPut},
+			},
+		}, {
+			desc:              "nb=many/req=p/o=y",
+			handler:           dummyHandler,
+			allowedOrigins:    manyOrigins,
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodOptions,
+			reqHeaders: http.Header{
+				headerOrigin: []string{last(manyOrigins)},
+				headerACRM:   []string{http.MethodPut},
+			},
+		}, {
+			desc:              "nb=many/req=p/o=n",
+			handler:           dummyHandler,
+			allowedOrigins:    manyOrigins,
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodOptions,
+			reqHeaders: http.Header{
+				headerOrigin: []string{disallowedOrigin},
+				headerACRM:   []string{http.MethodPut},
+			},
+		}, {
+			desc:              "nb=all/req=p/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"*"},
+			allowedMethods:    []string{http.MethodPut},
 			allowedReqHeaders: reqHeadersInDefaultRsCORS,
 			reqMethod:         http.MethodOptions,
 			reqHeaders: http.Header{
 				headerOrigin: []string{"https://example.com"},
-				headerACRM:   []string{http.MethodGet},
+				headerACRM:   []string{http.MethodPut},
+			},
+		}, {
+			desc:              "nb=all/req=p/o=y/special=malicious_acrh",
+			handler:           dummyHandler,
+			allowedOrigins:    []string{"*"},
+			allowedMethods:    []string{http.MethodPut},
+			allowedReqHeaders: reqHeadersInDefaultRsCORS,
+			reqMethod:         http.MethodOptions,
+			reqHeaders: http.Header{
+				headerOrigin: []string{"https://example.com"},
+				headerACRM:   []string{http.MethodPut},
 				headerACRH:   []string{strings.Repeat(",", 1024)},
 			},
 		},
@@ -218,7 +295,7 @@ func BenchmarkMiddleware(b *testing.B) {
 			MaxAge:           bc.maxAge,
 			ExposedHeaders:   bc.exposedResHeaders,
 		})
-		desc := "mw=rs-cors/req=" + bc.desc
+		desc := "mw=rs-cors/" + bc.desc
 		b.Run(desc, subBenchmark(rsMw.Handler(handler), req))
 
 		// jub0bs/cors
@@ -233,7 +310,7 @@ func BenchmarkMiddleware(b *testing.B) {
 		if err != nil {
 			b.Fatal(err)
 		}
-		desc = "mw=jub0bs-cors/req=" + bc.desc
+		desc = "mw=jub0bs-cors/" + bc.desc
 		b.Run(desc, subBenchmark(jub0bsMw.Wrap(handler), req))
 	}
 }
@@ -260,6 +337,8 @@ func subBenchmark(handler http.Handler, req *http.Request) func(*testing.B) {
 		})
 	}
 }
+
+const disallowedOrigin = "https://example.org:6060"
 
 var multipleOrigins = []string{
 	"https://*.example.net",
@@ -290,4 +369,9 @@ var reqHeadersInDefaultRsCORS = []string{
 	"Accept",
 	"Content-Type",
 	"X-Requested-With",
+}
+
+// Precondition: s is not empty
+func last(s []string) string {
+	return s[len(s)-1]
 }
