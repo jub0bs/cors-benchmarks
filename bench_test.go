@@ -44,7 +44,6 @@ func BenchmarkMiddleware(b *testing.B) {
 		// CORS config
 		allowedOrigins    []string
 		credentialed      bool
-		allowPNA          bool
 		allowedMethods    []string
 		allowedReqHeaders []string
 		maxAge            int
