@@ -3,6 +3,7 @@ package bench
 import (
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -275,31 +276,13 @@ var multipleOrigins = []string{
 var manyOrigins []string
 
 func init() { // populates manyOrigins
-	const n = 10
+	const n = 1000
+	manyOrigins = make([]string, n)
+	// Make all origins the same length.
+	width := int(math.Ceil(math.Log10(n))) // max digits of numbers in [1, n)
+	tmpl := fmt.Sprintf("https://%%0%dd.example.com", width)
 	for i := range n {
-		manyOrigins = append(
-			manyOrigins,
-			// https
-			fmt.Sprintf("https://%d.example.com", i),
-			fmt.Sprintf("https://%d.example.com:7070", i),
-			fmt.Sprintf("https://%d.example.com:8080", i),
-			fmt.Sprintf("https://%d.example.com:9090", i),
-			// one subdomain deep
-			fmt.Sprintf("https://%d.foo.example.com", i),
-			fmt.Sprintf("https://%d.foo.example.com:6060", i),
-			fmt.Sprintf("https://%d.foo.example.com:7070", i),
-			fmt.Sprintf("https://%d.foo.example.com:9090", i),
-			// two subdomains deep
-			fmt.Sprintf("https://%d.foo.bar.example.com", i),
-			fmt.Sprintf("https://%d.foo.bar.example.com:6060", i),
-			fmt.Sprintf("https://%d.foo.bar.example.com:7070", i),
-			fmt.Sprintf("https://%d.foo.bar.example.com:9090", i),
-			// arbitrary subdomains
-			"https://*.foo.bar.example.com",
-			"https://*.foo.bar.example.com:6060",
-			"https://*.foo.bar.example.com:7070",
-			"https://*.foo.bar.example.com:9090",
-		)
+		manyOrigins[i] = fmt.Sprintf(tmpl, i)
 	}
 }
 
