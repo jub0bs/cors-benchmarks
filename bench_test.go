@@ -262,7 +262,7 @@ func BenchmarkMiddleware(b *testing.B) {
 				headerACRM:   []string{http.MethodPut},
 			},
 		}, {
-			desc:              "nb=all/req=p/o=y/special=malicious_acrh",
+			desc:              "nb=all/req=p/o=y/m=evil_acrh",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"*"},
 			allowedMethods:    []string{http.MethodPut},
