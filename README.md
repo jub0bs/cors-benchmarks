@@ -4,7 +4,7 @@ This repo contains benchmarks (run with Go v1.26.0) that compare the
 performance of two CORS middleware libraries:
 
 - the more popular [rs/cors](https://github.com/rs/cors) (v1.11.1), and
-- the more user-friendly [jub0bs/cors](https://github.com/jub0bs/cors) (v0.11.0).
+- the more user-friendly [jub0bs/cors](https://github.com/jub0bs/cors) (v0.12.1).
 
 ## Running the benchmarks
 
@@ -26,26 +26,26 @@ pkg: github.com/jub0bs/cors-benchmarks
 cpu: Apple M4
                                            │   rs-cors    │             jub0bs-cors             │
                                            │    sec/op    │   sec/op     vs base                │
-Middleware/nb=one/req=a/o=y-10                529.4n ± 1%   553.6n ± 0%   +4.57% (p=0.000 n=10)
-Middleware/nb=one/req=a/o=n-10                528.6n ± 1%   524.3n ± 0%   -0.81% (p=0.000 n=10)
-Middleware/nb=multiple/req=a/o=y-10           531.5n ± 1%   559.8n ± 0%   +5.32% (p=0.000 n=10)
-Middleware/nb=multiple/req=a/o=n-10           539.5n ± 0%   537.0n ± 3%        ~ (p=0.517 n=10)
-Middleware/nb=two/req=a/o=y-10                596.2n ± 0%   588.7n ± 0%   -1.25% (p=0.002 n=10)
-Middleware/nb=two/req=a/o=n-10                580.0n ± 0%   559.1n ± 1%   -3.60% (p=0.000 n=10)
-Middleware/nb=many/req=a/o=y-10              1034.5n ± 0%   595.4n ± 3%  -42.45% (p=0.000 n=10)
-Middleware/nb=many/req=a/o=n-10               654.3n ± 0%   551.4n ± 0%  -15.73% (p=0.000 n=10)
-Middleware/nb=all/req=a/o=y-10                527.7n ± 3%   538.4n ± 0%        ~ (p=0.138 n=10)
-Middleware/nb=one/req=p/o=y-10                465.2n ± 0%   447.2n ± 1%   -3.87% (p=0.000 n=10)
-Middleware/nb=one/req=p/o=n-10                381.8n ± 0%   110.3n ± 0%  -71.11% (p=0.000 n=10)
-Middleware/nb=multiple/req=p/o=y-10           454.1n ± 0%   442.4n ± 1%   -2.55% (p=0.000 n=10)
-Middleware/nb=multiple/req=p/o=n-10           389.5n ± 0%   117.1n ± 1%  -69.94% (p=0.000 n=10)
-Middleware/nb=two/req=p/o=y-10                504.3n ± 1%   473.4n ± 0%   -6.11% (p=0.000 n=10)
-Middleware/nb=two/req=p/o=n-10                436.1n ± 0%   138.0n ± 1%  -68.34% (p=0.000 n=10)
-Middleware/nb=many/req=p/o=y-10               926.1n ± 0%   456.2n ± 0%  -50.73% (p=0.000 n=10)
-Middleware/nb=many/req=p/o=n-10               491.6n ± 0%   114.0n ± 0%  -76.81% (p=0.000 n=10)
-Middleware/nb=all/req=p/o=y-10                445.6n ± 0%   426.6n ± 0%   -4.26% (p=0.000 n=10)
-Middleware/nb=all/req=p/o=y/m=evil_acrh-10    450.6n ± 0%   126.6n ± 1%  -71.90% (p=0.000 n=10)
-geomean                                       532.3n        351.7n       -33.93%
+Middleware/nb=one/req=a/o=y-10                522.3n ± 1%   549.6n ± 1%   +5.22% (p=0.000 n=10)
+Middleware/nb=one/req=a/o=n-10                525.5n ± 0%   519.8n ± 0%   -1.09% (p=0.000 n=10)
+Middleware/nb=multiple/req=a/o=y-10           529.7n ± 0%   554.6n ± 1%   +4.69% (p=0.000 n=10)
+Middleware/nb=multiple/req=a/o=n-10           535.4n ± 0%   532.5n ± 0%   -0.53% (p=0.001 n=10)
+Middleware/nb=two/req=a/o=y-10                578.4n ± 0%   582.0n ± 0%   +0.62% (p=0.000 n=10)
+Middleware/nb=two/req=a/o=n-10                591.8n ± 2%   553.4n ± 1%   -6.48% (p=0.000 n=10)
+Middleware/nb=many/req=a/o=y-10              1043.5n ± 0%   569.2n ± 0%  -45.45% (p=0.000 n=10)
+Middleware/nb=many/req=a/o=n-10               635.4n ± 2%   528.4n ± 0%  -16.84% (p=0.000 n=10)
+Middleware/nb=all/req=a/o=y-10                523.5n ± 0%   519.6n ± 0%   -0.74% (p=0.001 n=10)
+Middleware/nb=one/req=p/o=y-10                446.7n ± 0%   433.6n ± 1%   -2.94% (p=0.001 n=10)
+Middleware/nb=one/req=p/o=n-10                377.0n ± 0%   107.1n ± 0%  -71.59% (p=0.000 n=10)
+Middleware/nb=multiple/req=p/o=y-10           449.6n ± 0%   437.6n ± 1%   -2.68% (p=0.000 n=10)
+Middleware/nb=multiple/req=p/o=n-10           385.5n ± 1%   119.2n ± 1%  -69.06% (p=0.000 n=10)
+Middleware/nb=two/req=p/o=y-10                498.2n ± 1%   479.3n ± 0%   -3.79% (p=0.000 n=10)
+Middleware/nb=two/req=p/o=n-10                441.9n ± 0%   134.2n ± 1%  -69.63% (p=0.000 n=10)
+Middleware/nb=many/req=p/o=y-10               929.9n ± 1%   447.4n ± 0%  -51.89% (p=0.000 n=10)
+Middleware/nb=many/req=p/o=n-10               489.1n ± 1%   110.1n ± 0%  -77.49% (p=0.000 n=10)
+Middleware/nb=all/req=p/o=y-10                454.2n ± 3%   434.2n ± 1%   -4.39% (p=0.000 n=10)
+Middleware/nb=all/req=p/o=y/m=evil_acrh-10    457.5n ± 3%   128.9n ± 2%  -71.83% (p=0.000 n=10)
+geomean                                       529.2n        346.8n       -34.47%
 
                                            │   rs-cors    │              jub0bs-cors               │
                                            │     B/op     │     B/op      vs base                  │
