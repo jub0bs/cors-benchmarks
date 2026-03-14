@@ -23,7 +23,7 @@ const (
 
 const hostMaxLen = 253
 
-func BenchmarkMiddleware(b *testing.B) {
+func BenchmarkCORS(b *testing.B) {
 	// preliminary sanity checks
 	if len(multipleOrigins) == 0 {
 		b.Fatalf("multipleOrigins is empty")
