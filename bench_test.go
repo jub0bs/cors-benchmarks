@@ -61,7 +61,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerOrigin: []string{"https://example.com"},
 			},
 		}, {
-			desc:              "nb=one/req=a/o=y",
+			desc:              "n=one/r=a/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"https://example.com"},
 			allowedMethods:    []string{http.MethodPut},
@@ -71,7 +71,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerOrigin: []string{"https://example.com"},
 			},
 		}, {
-			desc:              "nb=one/req=a/o=n",
+			desc:              "n=one/r=a/o=n",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"https://example.com"},
 			allowedMethods:    []string{http.MethodPut},
@@ -81,7 +81,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerOrigin: []string{"https://example.org"},
 			},
 		}, {
-			desc:              "nb=multiple/req=a/o=y",
+			desc:              "n=multiple/r=a/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    multipleOrigins,
 			allowedMethods:    []string{http.MethodPut},
@@ -91,7 +91,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerOrigin: []string{last(multipleOrigins)},
 			},
 		}, {
-			desc:              "nb=multiple/req=a/o=n",
+			desc:              "n=multiple/r=a/o=n",
 			handler:           dummyHandler,
 			allowedOrigins:    multipleOrigins,
 			allowedMethods:    []string{http.MethodPut},
@@ -101,7 +101,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerOrigin: []string{disallowedOrigin},
 			},
 		}, {
-			desc:    "nb=two/req=a/o=y",
+			desc:    "n=two/r=a/o=y",
 			handler: dummyHandler,
 			allowedOrigins: []string{
 				"https://a" + strings.Repeat(".a", hostMaxLen/2),
@@ -114,7 +114,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerOrigin: []string{"https://a" + strings.Repeat(".a", hostMaxLen/2)},
 			},
 		}, {
-			desc:    "nb=two/req=a/o=n",
+			desc:    "n=two/r=a/o=n",
 			handler: dummyHandler,
 			allowedOrigins: []string{
 				"https://a" + strings.Repeat(".a", hostMaxLen/2),
@@ -127,7 +127,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerOrigin: []string{"https://c" + strings.Repeat(".a", hostMaxLen/2)},
 			},
 		}, {
-			desc:              "nb=many/req=a/o=y",
+			desc:              "n=many/r=a/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    manyOrigins,
 			allowedMethods:    []string{http.MethodPut},
@@ -137,7 +137,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerOrigin: []string{last(manyOrigins)},
 			},
 		}, {
-			desc:              "nb=many/req=a/o=n",
+			desc:              "n=many/r=a/o=n",
 			handler:           dummyHandler,
 			allowedOrigins:    manyOrigins,
 			allowedMethods:    []string{http.MethodPut},
@@ -147,7 +147,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerOrigin: []string{disallowedOrigin},
 			},
 		}, {
-			desc:              "nb=all/req=a/o=y",
+			desc:              "n=all/r=a/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"*"},
 			allowedMethods:    []string{http.MethodPut},
@@ -157,7 +157,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerOrigin: []string{"https://example.com"},
 			},
 		}, {
-			desc:              "nb=one/req=p/o=y",
+			desc:              "n=one/r=p/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"https://example.com"},
 			allowedMethods:    []string{http.MethodPut},
@@ -168,7 +168,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerACRM:   []string{http.MethodPut},
 			},
 		}, {
-			desc:              "nb=one/req=p/o=n",
+			desc:              "n=one/r=p/o=n",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"https://example.com"},
 			allowedMethods:    []string{http.MethodPut},
@@ -179,7 +179,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerACRM:   []string{http.MethodPut},
 			},
 		}, {
-			desc:              "nb=multiple/req=p/o=y",
+			desc:              "n=multiple/r=p/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    multipleOrigins,
 			allowedMethods:    []string{http.MethodPut},
@@ -190,7 +190,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerACRM:   []string{http.MethodPut},
 			},
 		}, {
-			desc:              "nb=multiple/req=p/o=n",
+			desc:              "n=multiple/r=p/o=n",
 			handler:           dummyHandler,
 			allowedOrigins:    multipleOrigins,
 			allowedMethods:    []string{http.MethodPut},
@@ -201,7 +201,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerACRM:   []string{http.MethodPut},
 			},
 		}, {
-			desc:    "nb=two/req=p/o=y",
+			desc:    "n=two/r=p/o=y",
 			handler: dummyHandler,
 			allowedOrigins: []string{
 				"https://a" + strings.Repeat(".a", hostMaxLen/2),
@@ -215,7 +215,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerACRM:   []string{http.MethodPut},
 			},
 		}, {
-			desc:    "nb=two/req=p/o=n",
+			desc:    "n=two/r=p/o=n",
 			handler: dummyHandler,
 			allowedOrigins: []string{
 				"https://a" + strings.Repeat(".a", hostMaxLen/2),
@@ -229,7 +229,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerACRM:   []string{http.MethodPut},
 			},
 		}, {
-			desc:              "nb=many/req=p/o=y",
+			desc:              "n=many/r=p/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    manyOrigins,
 			allowedMethods:    []string{http.MethodPut},
@@ -240,7 +240,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerACRM:   []string{http.MethodPut},
 			},
 		}, {
-			desc:              "nb=many/req=p/o=n",
+			desc:              "n=many/r=p/o=n",
 			handler:           dummyHandler,
 			allowedOrigins:    manyOrigins,
 			allowedMethods:    []string{http.MethodPut},
@@ -251,7 +251,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerACRM:   []string{http.MethodPut},
 			},
 		}, {
-			desc:              "nb=all/req=p/o=y",
+			desc:              "n=all/r=p/o=y",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"*"},
 			allowedMethods:    []string{http.MethodPut},
@@ -262,7 +262,7 @@ func BenchmarkCORS(b *testing.B) {
 				headerACRM:   []string{http.MethodPut},
 			},
 		}, {
-			desc:              "nb=all/req=p/o=y/m=evil_acrh",
+			desc:              "n=all/r=p/o=y/m=evil_acrh",
 			handler:           dummyHandler,
 			allowedOrigins:    []string{"*"},
 			allowedMethods:    []string{http.MethodPut},
