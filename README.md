@@ -1,10 +1,10 @@
 # Benchmarks comparing rs/cors and jub0bs/cors
 
-This repo contains benchmarks (run with Go v1.26.1) that compare the
+This repo contains benchmarks (run with Go v1.26.3) that compare the
 performance of two CORS middleware libraries:
 
 - the more popular [rs/cors](https://github.com/rs/cors) (v1.11.1), and
-- the more user-friendly [jub0bs/cors](https://github.com/jub0bs/cors) (v1.0.1).
+- the more user-friendly [jub0bs/cors](https://github.com/jub0bs/cors) (v1.0.2).
 
 ## Running the benchmarks
 
@@ -26,26 +26,26 @@ pkg: github.com/jub0bs/cors-benchmarks
 cpu: Apple M4
                                   │   rs-cors    │             jub0bs-cors             │
                                   │    sec/op    │   sec/op     vs base                │
-CORS/n=one/r=a/o=y-10                528.9n ± 1%   549.5n ± 0%   +3.89% (p=0.000 n=10)
-CORS/n=one/r=a/o=n-10                531.8n ± 0%   525.3n ± 1%   -1.21% (p=0.000 n=10)
-CORS/n=multiple/r=a/o=y-10           535.1n ± 0%   555.1n ± 1%   +3.75% (p=0.000 n=10)
-CORS/n=multiple/r=a/o=n-10           542.5n ± 0%   536.0n ± 0%   -1.21% (p=0.000 n=10)
-CORS/n=two/r=a/o=y-10                586.4n ± 1%   560.8n ± 0%   -4.37% (p=0.000 n=10)
-CORS/n=two/r=a/o=n-10                585.0n ± 2%   535.1n ± 2%   -8.52% (p=0.000 n=10)
-CORS/n=many/r=a/o=y-10              1034.5n ± 1%   575.9n ± 0%  -44.33% (p=0.000 n=10)
-CORS/n=many/r=a/o=n-10               641.6n ± 0%   527.1n ± 0%  -17.85% (p=0.000 n=10)
-CORS/n=all/r=a/o=y-10                531.4n ± 0%   527.2n ± 0%   -0.81% (p=0.000 n=10)
-CORS/n=one/r=p/o=y-10                451.7n ± 1%   432.8n ± 0%   -4.18% (p=0.000 n=10)
-CORS/n=one/r=p/o=n-10                382.2n ± 0%   106.6n ± 0%  -72.11% (p=0.000 n=10)
-CORS/n=multiple/r=p/o=y-10           454.5n ± 0%   434.5n ± 0%   -4.40% (p=0.000 n=10)
-CORS/n=multiple/r=p/o=n-10           389.7n ± 0%   113.0n ± 0%  -71.02% (p=0.000 n=10)
-CORS/n=two/r=p/o=y-10                504.1n ± 0%   439.4n ± 0%  -12.84% (p=0.000 n=10)
-CORS/n=two/r=p/o=n-10                435.9n ± 0%   110.9n ± 0%  -74.55% (p=0.000 n=10)
-CORS/n=many/r=p/o=y-10               931.3n ± 1%   454.9n ± 0%  -51.15% (p=0.000 n=10)
-CORS/n=many/r=p/o=n-10               492.5n ± 0%   108.6n ± 0%  -77.95% (p=0.000 n=10)
-CORS/n=all/r=p/o=y-10                446.8n ± 0%   445.9n ± 0%   -0.21% (p=0.037 n=10)
-CORS/n=all/r=p/o=y/m=evil_acrh-10    450.2n ± 0%   142.6n ± 0%  -68.33% (p=0.000 n=10)
-geomean                              531.7n        342.4n       -35.60%
+CORS/n=one/r=a/o=y-10                535.5n ± 1%   555.5n ± 1%   +3.74% (p=0.000 n=10)
+CORS/n=one/r=a/o=n-10                545.5n ± 2%   538.2n ± 1%        ~ (p=0.063 n=10)
+CORS/n=multiple/r=a/o=y-10           540.8n ± 0%   561.9n ± 0%   +3.90% (p=0.000 n=10)
+CORS/n=multiple/r=a/o=n-10           548.4n ± 0%   541.1n ± 2%   -1.33% (p=0.011 n=10)
+CORS/n=two/r=a/o=y-10                592.9n ± 0%   566.9n ± 0%   -4.39% (p=0.000 n=10)
+CORS/n=two/r=a/o=n-10                591.5n ± 0%   538.6n ± 0%   -8.95% (p=0.000 n=10)
+CORS/n=many/r=a/o=y-10              1058.0n ± 0%   583.7n ± 0%  -44.83% (p=0.000 n=10)
+CORS/n=many/r=a/o=n-10               648.8n ± 1%   530.7n ± 0%  -18.19% (p=0.000 n=10)
+CORS/n=all/r=a/o=y-10                537.4n ± 0%   532.5n ± 1%   -0.90% (p=0.001 n=10)
+CORS/n=one/r=p/o=y-10                455.7n ± 0%   436.4n ± 0%   -4.22% (p=0.000 n=10)
+CORS/n=one/r=p/o=n-10                383.4n ± 0%   108.2n ± 1%  -71.77% (p=0.000 n=10)
+CORS/n=multiple/r=p/o=y-10           459.6n ± 0%   438.5n ± 0%   -4.61% (p=0.000 n=10)
+CORS/n=multiple/r=p/o=n-10           392.6n ± 0%   114.2n ± 1%  -70.91% (p=0.000 n=10)
+CORS/n=two/r=p/o=y-10                508.2n ± 0%   442.5n ± 1%  -12.93% (p=0.000 n=10)
+CORS/n=two/r=p/o=n-10                439.3n ± 2%   112.5n ± 0%  -74.40% (p=0.000 n=10)
+CORS/n=many/r=p/o=y-10               958.2n ± 1%   457.9n ± 0%  -52.22% (p=0.000 n=10)
+CORS/n=many/r=p/o=n-10               496.0n ± 1%   108.4n ± 0%  -78.16% (p=0.000 n=10)
+CORS/n=all/r=p/o=y-10                449.4n ± 0%   448.8n ± 0%        ~ (p=0.127 n=10)
+CORS/n=all/r=p/o=y/m=evil_acrh-10    454.2n ± 1%   144.0n ± 0%  -68.30% (p=0.000 n=10)
+geomean                              537.9n        345.8n       -35.72%
 
                                   │   rs-cors    │              jub0bs-cors               │
                                   │     B/op     │     B/op      vs base                  │
